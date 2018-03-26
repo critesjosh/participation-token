@@ -1,5 +1,5 @@
 {
-  "name": "Participation Token",
+  "name": "participation-token",
   "version": "1.7.0",
   "description": "Frozen tokens issuance for participating in the community",
   "scripts": {
@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/PhABC/ParticipationToken.git"
+    "url": "https://github.com/PhABC/participation-token.git"
   },
   "keywords": [
     "solidity",
@@ -28,9 +28,9 @@
   "author": "Philippe Castonguay <ph.castonguay@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/PhABC/ParticipationToken/issues"
+    "url": "https://github.com/PhABC/participation-token/issues"
   },
-  "homepage": "https://github.com/OpenZeppelin/zeppelin-solidity",
+  "homepage": "https://github.com/PhABC/participation-token",
   "devDependencies": {
     "babel-polyfill": "^6.23.0",
     "babel-preset-es2015": "^6.18.0",
