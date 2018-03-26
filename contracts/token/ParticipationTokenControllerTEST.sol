@@ -13,7 +13,7 @@ import "../token/SouthMichiganBlockchainersToken.sol";
  * Both addresses are required to prevent reusing the same authorization message
  * on different contract with same owner.
  */
-contract AttendanceTokenControllerTEST is Ownable {
+contract ParticipationTokenControllerTEST is Ownable {
   using SafeMath for uint256;
 
   //Variables
@@ -39,7 +39,7 @@ contract AttendanceTokenControllerTEST is Ownable {
 
   /*
   // Constructor (requires owner to be contract, e.g. multisig)
-  function AttendanceTokenController(
+  function ParticipationTokenControllerTEST(
     string _name, 
     string _symbol, 
     uint8 _decimals) 
@@ -63,7 +63,7 @@ contract AttendanceTokenControllerTEST is Ownable {
   */
 
   // Constructor (requires owner to be contract, e.g. multisig)
-  function AttendanceTokenControllerTEST() 
+  function ParticipationTokenControllerTEST() 
     public 
   {
     
