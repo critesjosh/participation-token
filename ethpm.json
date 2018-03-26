@@ -1,5 +1,5 @@
 {
-  "package_name": "Participation Token",
+  "package_name": "participation-token",
   "version": "1.7.0",
   "description": "Frozen tokens issuance for participating in the community",
   "authors": [
