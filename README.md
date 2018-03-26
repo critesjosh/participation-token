@@ -14,6 +14,13 @@ Participation tokens have no intrinsic values, but could be used by communities 
 # Participation Token issuance logic
 
 In order to redeem tokens, participants need to receive a signed message from a certain number of administrators.
-This signed message contains the **address of the Participation Token Issuance contract**, **address of the participant**,
+This signed message contains the **address of the ParticipationTokenController.sol contract**, **address of the participant**,
 a **nonce** (representing an event for example or task) and the **amount of tokens** the user can mint. With enough valid
 signatures, the users will be able to mint some tokens via the [ParticipationTokenController.sol](https://github.com/PhABC/participation-token/blob/master/contracts/token/ParticipationTokenController.sol) contract.
+
+# Run tests
+In local folder :
+1. `npm install`
+2. `npm test`
+
+# How to deploy your own Participation Token
