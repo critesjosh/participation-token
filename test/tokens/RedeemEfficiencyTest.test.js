@@ -9,11 +9,11 @@ require('chai')
   .use(require('chai-bignumber')(BigNumber))
   .should();
 
-const AttendanceTokenControllerTEST = artifacts.require('AttendanceTokenControllerTEST');
+const ParticipationTokenControllerTEST = artifacts.require('ParticipationTokenControllerTEST');
 const SouthMichiganBlockchainersToken = artifacts.require('SouthMichiganBlockchainersToken');
 
 
-contract('AttendanceTokenControllerTEST', function ([_, owner, admin1, admin2, authorized, unauthorized, anyone]) {
+contract('ParticipationTokenControllerTEST', function ([_, owner, admin1, admin2, authorized, unauthorized, anyone]) {
   const name   = 'TOKEN';
   const symb   = 'TKN';
   const dec    = 18;
@@ -22,7 +22,7 @@ contract('AttendanceTokenControllerTEST', function ([_, owner, admin1, admin2, a
 
   describe.skip('Efficiency test for redeeming token methods', function (){
     beforeEach(async function () {
-      this.controller = await AttendanceTokenControllerTEST.new({from: owner});
+      this.controller = await ParticipationTokenControllerTEST.new({from: owner});
     });
 
     describe('redeemTokensMAPPING()', function () { 
