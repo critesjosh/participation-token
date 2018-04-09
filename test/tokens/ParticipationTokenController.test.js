@@ -80,7 +80,7 @@ contract('ParticipationTokenController', function ([_, owner, admin1, admin2, au
         await this.controller.setAsAdmin(admin1, {from : owner});
         let m = Web3Utils.soliditySha3(
                 this.controller.address,
-                authorized,
+                authorized.substr(2),
                 amount,
                 nonce
             );
@@ -107,7 +107,7 @@ contract('ParticipationTokenController', function ([_, owner, admin1, admin2, au
           await this.controller.setAsAdmin(admin2, {from : owner});
           let m = Web3Utils.soliditySha3(
                 this.controller.address,
-                authorized,
+                authorized.substr(2),
                 amount,
                 nonce
             );
