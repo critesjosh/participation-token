@@ -2,24 +2,20 @@ pragma solidity ^0.4.18;
 
 import "../math/SafeMath.sol";
 import "../ownership/Ownable.sol";
-import "../token/SouthMichiganBlockchainersToken.sol";
+import "../token/FrozenMintableToken.sol";
 
 /* 
     To add [?]:
-      + Token ownership transfer from this contract (safely)
-      + Upgradability
-      + Genetic FrozenMintableToken instantiation
       + Burn?  
 
 */
 
-/**
- * @title AttendanceTokenController
- * @dev The ControlledAccess contract allows functions to be restricted to users
- * that possess a signed authorization from the owner of the contract. This signed
- * message includes the address to give permission to and the contract address.
- * Both addresses are required to prevent reusing the same authorization message
- * on different contract with same owner.
+/*
+   @title AttendanceTokenController
+   @dev The ParticipationTokenController contract allows "participants" to redeem tokens
+        based on signed messages from administrators. Multiple admins agree on a token amount
+        and event ID and signed messages for users that can redeem the agreed on token amount
+        for the chosen nonce. A nonce can't be reused by the same user.
  */
 contract ParticipationTokenController is Ownable {
   using SafeMath for uint256;
@@ -29,56 +25,29 @@ contract ParticipationTokenController is Ownable {
   mapping(uint256 => address) IDadmin;                            // The admin's address associated with the 2^i uint ID
   mapping(address => uint256) adminID;                            // The 2^i uint ID associated with the admin's address
   uint8 sigRequired = 2;                                          // Number of signatures required to redeem tokens
-  SouthMichiganBlockchainersToken public token;                   // Token contract
+  FrozenMintableToken public token;                   // Token contract
 
   //Events
   event TokensRedeemed(address indexed _address, uint256 _amount, uint256 _nonce);
   event AdminStatusChanged(address indexed _admin, uint256 _adminID);
   event SigRequiredChanged(uint256 _sigRequired);
+  event TokenOwnerChanged(address _newOwner);
+
 
   /*
-  // Constructor (requires owner to be contract, e.g. multisig)
+     @dev Create new ParticipationToken and token controller contract
+     @param _name Name of the new participation token.
+     @param _symbol Symbol of the new participation token.
+     @param _decimals Number of decimals for the new participation token.
+  */  
   function ParticipationTokenController(
     string _name, 
     string _symbol, 
     uint8 _decimals) 
     public 
-  {
-    
-    /*
-    address sender = msg.sender;
-    uint32 senderCodeSize;
-
-    //Requires owner to be contract (multisig)
-    assembly { 
-      senderCodeSize := extcodesize(sender) 
-    }
-    require(senderCodeSize > 0);
-    
-
+  {    
     // Create new token
-    token = new SouthMichiganBlockchainersToken(_name, _symbol, _decimals); 
-  }
-  */
-
-  // Constructor (requires owner to be contract, e.g. multisig)
-  function ParticipationTokenController() 
-    public 
-  {
-    
-    /*
-    address sender = msg.sender;
-    uint32 senderCodeSize;
-
-    //Requires owner to be contract (multisig)
-    assembly { 
-      senderCodeSize := extcodesize(sender) 
-    }
-    require(senderCodeSize > 0);
-    */
-
-    // Create new token
-    token = new SouthMichiganBlockchainersToken(); 
+    token = new FrozenMintableToken(_name, _symbol, _decimals); 
   }
 
   /*
@@ -134,6 +103,30 @@ contract ParticipationTokenController is Ownable {
 
     AdminStatusChanged(_admin, 0);
     return true;
+  }
+
+  /*
+     @dev Set token's owner to new address (to allow new tokenController).
+     @param _newOwner Address of new owner.
+  */
+  function setTokenOwner(address _newOwner) public onlyOwner {
+
+    // Code size of new owner
+    uint32 newOwnerCodeSize; 
+
+    // Get _newOwner code size
+    assembly { 
+      newOwnerCodeSize := extcodesize(_newOwner) 
+    }
+
+    //Requires owner to be contract (token controller)
+    require(newOwnerCodeSize > 0);
+    
+    // Change token ownership
+    token.transferOwnership(_newOwner);
+
+    // Trigger event
+    TokenOwnerChanged(_newOwner);
   }
 
   /*
@@ -292,7 +285,6 @@ contract ParticipationTokenController is Ownable {
      @param _amount Amount of tokens that can be claimed
      @param _nonce  Nonce of the event
      @param _sig Valid signature from owner 
-
   */
   function isValidRedeemMessage(
       address _add, 

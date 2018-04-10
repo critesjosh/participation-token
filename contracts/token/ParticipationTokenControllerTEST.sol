@@ -2,16 +2,13 @@ pragma solidity ^0.4.18;
 
 import "../math/SafeMath.sol";
 import "../ownership/Ownable.sol";
-import "../token/SouthMichiganBlockchainersToken.sol";
+import "../token/FrozenMintableToken.sol";
 
 
 /**
  * @title AttendanceTokenControllerTEST
- * @dev The ControlledAccess contract allows functions to be restricted to users
- * that possess a signed authorization from the owner of the contract. This signed
- * message includes the address to give permission to and the contract address.
- * Both addresses are required to prevent reusing the same authorization message
- * on different contract with same owner.
+ * @dev Test various way to validate signatures in order to optimize gas consumption
+        when users redeem their tokens.
  */
 contract ParticipationTokenControllerTEST is Ownable {
   using SafeMath for uint256;
@@ -19,7 +16,7 @@ contract ParticipationTokenControllerTEST is Ownable {
   //Variables
   mapping (address => bool) admin;                                // Who can sign messages
   mapping (address => mapping (uint256 => bool)) redeemedTokens;  // Whether tokens where redeemed for an ID
-  SouthMichiganBlockchainersToken public token;                   // Token contract
+  FrozenMintableToken public token;                   // Token contract
 
   //Struct
   mapping (address => bool) sigUsed; //placeholder to prevent reusing same signature
@@ -37,50 +34,23 @@ contract ParticipationTokenControllerTEST is Ownable {
   event AdminStatusChanged(address _admin, uint256 _adminStatus);
   event SigRequiredChanged(uint256 _sigRequired);
 
+
   /*
-  // Constructor (requires owner to be contract, e.g. multisig)
+     @dev Create new ParticipationToken and token controller contract
+     @param _name Name of the new participation token.
+     @param _symbol Symbol of the new participation token.
+     @param _decimals Number of decimals for the new participation token.
+  */  
   function ParticipationTokenControllerTEST(
     string _name, 
     string _symbol, 
     uint8 _decimals) 
     public 
   {
-    
-    /*
-    address sender = msg.sender;
-    uint32 senderCodeSize;
-
-    //Requires owner to be contract (multisig)
-    assembly { 
-      senderCodeSize := extcodesize(sender) 
-    }
-    require(senderCodeSize > 0);
-    
-
     // Create new token
-    token = new SouthMichiganBlockchainersToken(_name, _symbol, _decimals); 
+    token = new FrozenMintableToken(_name, _symbol, _decimals); 
   }
-  */
 
-  // Constructor (requires owner to be contract, e.g. multisig)
-  function ParticipationTokenControllerTEST() 
-    public 
-  {
-    
-    /*
-    address sender = msg.sender;
-    uint32 senderCodeSize;
-
-    //Requires owner to be contract (multisig)
-    assembly { 
-      senderCodeSize := extcodesize(sender) 
-    }
-    require(senderCodeSize > 0);
-    */
-
-    // Create new token
-    token = new SouthMichiganBlockchainersToken(); 
-  }
   /*
      @dev Change the authorization status of a given address
      @param _add Address to change authorization status
