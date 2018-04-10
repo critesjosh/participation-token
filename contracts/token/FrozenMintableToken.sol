@@ -11,9 +11,7 @@ import "../ownership/Ownable.sol";
 */
 contract FrozenMintableToken is FrozenStandardToken, Ownable {
   event Mint(address indexed to, uint256 amount);
-
-
-  /*
+  
   function FrozenMintableToken(
     string _name, 
     string _symbol, 
@@ -22,9 +20,6 @@ contract FrozenMintableToken is FrozenStandardToken, Ownable {
     DetailedERC20(_name, _symbol, _decimals) 
   {
   }
-  */
-
-
   /*
      @dev Function to mint tokens
      @param _to The address that will receive the minted tokens.

@@ -1,7 +1,7 @@
 pragma solidity ^0.4.18;
 
 import "./FrozenBasicToken.sol";
-import "./ERC20.sol";
+import "./DetailedERC20.sol";
 
 
 /**
@@ -11,7 +11,7 @@ import "./ERC20.sol";
  * @dev https://github.com/ethereum/EIPs/issues/20
  * @dev Based on code by FirstBlood: https://github.com/Firstbloodio/token/blob/master/smart_contract/FirstBloodToken.sol
  */
-contract FrozenStandardToken is ERC20, FrozenBasicToken {
+contract FrozenStandardToken is DetailedERC20, FrozenBasicToken {
 
   mapping (address => mapping (address => uint256)) internal allowed;
 
