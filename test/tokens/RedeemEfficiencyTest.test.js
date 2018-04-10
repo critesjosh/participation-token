@@ -10,7 +10,7 @@ require('chai')
   .should();
 
 const ParticipationTokenControllerTEST = artifacts.require('ParticipationTokenControllerTEST');
-const SouthMichiganBlockchainersToken = artifacts.require('SouthMichiganBlockchainersToken');
+const FrozenMintableToken = artifacts.require('FrozenMintableToken');
 
 
 contract('ParticipationTokenControllerTEST', function ([_, owner, admin1, admin2, authorized, unauthorized, anyone]) {
@@ -22,7 +22,7 @@ contract('ParticipationTokenControllerTEST', function ([_, owner, admin1, admin2
 
   describe.skip('Efficiency test for redeeming token methods', function (){
     beforeEach(async function () {
-      this.controller = await ParticipationTokenControllerTEST.new({from: owner});
+      this.controller = await ParticipationTokenControllerTEST.new(name, symb, dec, {from: owner});
     });
 
     describe('redeemTokensMAPPING()', function () { 
