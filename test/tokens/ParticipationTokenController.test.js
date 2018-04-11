@@ -17,12 +17,13 @@ contract('ParticipationTokenController', function ([_, owner, admin1, admin2, au
   const name   = 'TOKEN';
   const symb   = 'TKN';
   const dec    = 18;
+  const sigReq = 2;
   const amount = '100';
   const nonce  = '1';
 
   context('Once ParticipationTokenController is deployed', function (){
     beforeEach(async function () {
-      this.controller = await ParticipationTokenController.new(name, symb, dec, {from: owner});
+      this.controller = await ParticipationTokenController.new(name, symb, dec, sigReq, {from: owner});
       let token = await this.controller.token();
       this.token = await FrozenMintableToken.at(token);
     });
