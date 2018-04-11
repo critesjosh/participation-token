@@ -23,8 +23,6 @@ const store = createStore(ptokenApp)
 
 import { addWeb3, addAccount } from './actions'
 
-console.log(store.getState())
-
 import './css/oswald.css'
 import './css/open-sans.css'
 import './css/pure-min.css'
@@ -60,8 +58,8 @@ class App extends Component {
   
   getAccount(web3){
     web3.eth.getAccounts((err, accounts) => {
+      if(err) console.log(err)
       store.dispatch(addAccount(accounts[0]))
-      console.log(store.getState())
     })
   }
 

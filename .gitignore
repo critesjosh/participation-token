@@ -1,0 +1,12 @@
+node_modules
+.env
+npm-debug.log
+
+# c9 configs
+.c9
+
+# truffle contracts
+build
+
+# production version of UI created by 'npm run build'
+build_webpack

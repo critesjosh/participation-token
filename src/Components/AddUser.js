@@ -1,13 +1,22 @@
 import React, {Component} from 'react'
 import axios from 'axios'
+var ethUtil = require('ethereumjs-util')
+import { connect } from 'react-redux';
 
 import { FormGroup, ControlLabel, FormControl, Button } from 'react-bootstrap'
+
+const mapStateToProps = function(state){
+  return {
+    account: state.addAccount.account,
+    web3: state.addWeb3.web3
+  }
+}
 
 class AddUser extends Component {
     
       constructor(props) {
         super(props)
-    
+        
         this.state = {
             ethAddress: null,
             emailAddress: null
@@ -24,17 +33,36 @@ class AddUser extends Component {
 
     
     handleSubmit (e) {
-        var ethAddress = this.state.ethAddress
         var emailAddress = this.state.emailAddress
+        
         var url = window.location.hostname
         
-        axios.post('https://' + url + '/api/newuser', {
-            ethAddress: ethAddress,
-            emailAddress: emailAddress
+        const signer = this.props.account
+        const web3 = this.props.web3 
+        
+        const text = "This is a verification message for the server to validate your address."
+        const msg = ethUtil.bufferToHex(new Buffer(text, 'utf8'))
+        const params = [msg, signer]
+        const method = 'personal_sign'
+        
+        web3.currentProvider.sendAsync({
+          method,
+          params,
+          signer,
+        }, function (err, result) {
+          if(err) console.log(err)
+          if (result.error) return console.error(result.error)
+          
+          axios.post('https://' + url + '/api/newuser', {
+              ethAddress: signer,
+              emailAddress: emailAddress,
+              sig: result.result
+          })
+          .then(res => {
+              console.log(res)
+          })
         })
-        .then(res => {
-            console.log(res)
-        })
+        
     }
     
     render() {
@@ -51,7 +79,7 @@ class AddUser extends Component {
                   <FormControl
                     type="text"
                     onChange={this.ethAddressChanged.bind(this)}
-                    placeholder="Enter ETH Address here"
+                    value={this.props.account}
                   />
                   <br></br>
                   <p>Enter Email Address:</p>
@@ -69,5 +97,4 @@ class AddUser extends Component {
     }
 }
 
-
-export default AddUser
+export default connect(mapStateToProps)(AddUser)

@@ -1,11 +1,12 @@
-var express = require('express');
-var router = express.Router();
+var express = require('express')
+var router = express.Router()
 var validate = require('../utils/validate')
+var db = require("./db-calls")
 
 //Schemas
-var User = require('../Schemas/userSchema.js');
-var Event = require('../Schemas/eventSchema.js');
-var Attendee = require('../Schemas/attendeeSchema.js');
+var User = require('../Schemas/userSchema.js')
+var Event = require('../Schemas/eventSchema.js')
+var Attendee = require('../Schemas/attendeeSchema.js')
 
 
 module.exports = {
@@ -13,48 +14,27 @@ module.exports = {
         // To prevent errors from Cross Origin Resource Sharing, we will set 
         // our headers to allow CORS with middleware like so:
         app.use(function(req, res, next) {
-         res.setHeader("Access-Control-Allow-Origin", "*");
-         res.setHeader("Access-Control-Allow-Credentials", "true");
-         res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT,DELETE");
+         res.setHeader("Access-Control-Allow-Origin", "*")
+         res.setHeader("Access-Control-Allow-Credentials", "true")
+         res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT,DELETE")
          res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
         
          // and remove cacheing so we get the most recent comments
-         res.setHeader("Cache-Control", "no-cache");
+         res.setHeader("Cache-Control", "no-cache")
          next();
         });
         
         //now we can set the route path & initialize the API
         router.get("/", function(req, res) {
-         res.json({ message: "API Initialized!"});
+          return db.init(req, res)
         });
         
         router.post('/newuser', (req, res) => {
-          console.log(req.body)
-          var emailAddress = req.body.emailAddress
-          var ethAddress = req.body.ethAddress
-        
-          //check user input, return if invalid
-          if(!validate.email(emailAddress) || !validate.ethAddress(ethAddress)) {
-            res.send("invalid input")
-            return
-          }
-          
-          var newUser = new User({
-              ethAddress: ethAddress,
-              emailAddress: emailAddress
-          })
-          
-          newUser.save((err) => {if (err) { console.log(err) } })
-          
-          res.send(newUser)
+          return db.addUser(req, res)
         })
         
         router.get("/users", (req, res) => {
-          var users = User.find({})
-          users.exec((err, result) => {
-            if(err) console.log(err)
-            res.send(result)
-          })
+          return db.getUsers(req, res)
         })
         
         router.get('/user/:userId', (req, res) =>{
