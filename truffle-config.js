@@ -27,6 +27,12 @@ module.exports = {
       provider: ropstenProvider,
       network_id: 3, // eslint-disable-line camelcase
     },
+    rinkeby: {
+      host: "localhost", // Connect to geth on the specified
+      port: 8545,
+      network_id: 4,
+      gasPrice: 0x77359400,
+    },
     coverage: {
       host: 'localhost',
       network_id: '*', // eslint-disable-line camelcase
