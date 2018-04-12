@@ -13,10 +13,10 @@ var ptcInstance = require('./utils/getContracts')
 var express = require('express')
 var app = express();
 
-const credentials = {
-  cert: fs.readFileSync("/etc/letsencrypt/live/aqui.joshcrites.com/fullchain.pem"),
-  key: fs.readFileSync("/etc/letsencrypt/live/aqui.joshcrites.com/privkey.pem")
-}
+// const credentials = {
+//   cert: fs.readFileSync("/etc/letsencrypt/live/aqui.joshcrites.com/fullchain.pem"),
+//   key: fs.readFileSync("/etc/letsencrypt/live/aqui.joshcrites.com/privkey.pem")
+// }
 //var server = https.createServer(credentials, app)
 var server = http.createServer(app);
 
