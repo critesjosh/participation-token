@@ -1,9 +1,9 @@
 import assertRevert from '../helpers/assertRevert';
-const FrozenMintableToken = artifacts.require('FrozenMintableToken');
+const FrozenMintBurnToken = artifacts.require('FrozenMintBurnToken');
 
-contract('FrozenMintableToken', function ([owner, anyone]) {
+contract('FrozenMintBurnToken', function ([owner, anyone]) {
   beforeEach(async function () {
-    this.token = await FrozenMintableToken.new('NAME', 'SYM', 18, { from: owner });
+    this.token = await FrozenMintBurnToken.new('NAME', 'SYM', 18, { from: owner });
   });
 
   describe('mint', function () {

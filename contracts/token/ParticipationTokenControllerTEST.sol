@@ -2,7 +2,7 @@ pragma solidity ^0.4.18;
 
 import "../math/SafeMath.sol";
 import "../ownership/Ownable.sol";
-import "../token/FrozenMintableToken.sol";
+import "../token/FrozenMintBurnToken.sol";
 
 
 /**
@@ -16,7 +16,7 @@ contract ParticipationTokenControllerTEST is Ownable {
   //Variables
   mapping (address => bool) admin;                                // Who can sign messages
   mapping (address => mapping (uint256 => bool)) redeemedTokens;  // Whether tokens where redeemed for an ID
-  FrozenMintableToken public token;                   // Token contract
+  FrozenMintBurnToken public token;                   // Token contract
 
   //Struct
   mapping (address => bool) sigUsed; //placeholder to prevent reusing same signature
@@ -48,7 +48,7 @@ contract ParticipationTokenControllerTEST is Ownable {
     public 
   {
     // Create new token
-    token = new FrozenMintableToken(_name, _symbol, _decimals); 
+    token = new FrozenMintBurnToken(_name, _symbol, _decimals); 
   }
 
   /*

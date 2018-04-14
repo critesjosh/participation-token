@@ -10,7 +10,7 @@ require('chai')
   .should();
 
 const ParticipationTokenController = artifacts.require('ParticipationTokenController');
-const FrozenMintableToken = artifacts.require('FrozenMintableToken');
+const FrozenMintBurnToken = artifacts.require('FrozenMintBurnToken');
 
 
 contract('ParticipationTokenController', function ([_, owner, admin1, admin2, authorized, unauthorized, anyone]) {
@@ -21,11 +21,20 @@ contract('ParticipationTokenController', function ([_, owner, admin1, admin2, au
   const amount = '100';
   const nonce  = '1';
 
-  context('Once ParticipationTokenController is deployed', function (){
+  context('Once ParticipationTokenController and Token are deployed', function (){
     beforeEach(async function () {
-      this.controller = await ParticipationTokenController.new(name, symb, dec, sigReq, {from: owner});
-      let token = await this.controller.token();
-      this.token = await FrozenMintableToken.at(token);
+      
+      //Create token
+      this.token = await FrozenMintBurnToken.new(name, symb, dec, {from: owner}); 
+      
+      //Create token controller
+      this.controller = await ParticipationTokenController.new(sigReq, {from: owner});
+
+      //Give ownership to token controller
+      await this.token.transferOwnership(this.controller.address, {from: owner});
+
+      //Set token address for controller
+      this.controller.setTokenAddress(this.token.address, {from: owner});
     });
 
     it('should set token owner to ParticipationTokenController contract', async function () {

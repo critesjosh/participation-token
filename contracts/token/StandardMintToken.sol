@@ -1,18 +1,20 @@
 pragma solidity ^0.4.18;
 
-import "./FrozenStandardToken.sol";
+import "./StandardToken.sol";
 import "../ownership/Ownable.sol";
 
-/*
-   @title Mintable token
-   @dev Simple ERC20 Token example, with mintable token creation
-   @dev Issue: * https://github.com/OpenZeppelin/zeppelin-solidity/issues/120
-   Based on code by TokenMarketNet: https://github.com/TokenMarketNet/ico/blob/master/contracts/MintableToken.sol
-*/
-contract FrozenMintableToken is FrozenStandardToken, Ownable {
+/**
+ * @title Standard ERC20 token
+ *
+ * @dev Implementation of the basic standard token.
+ * @dev https://github.com/ethereum/EIPs/issues/20
+ * @dev Based on code by FirstBlood: https://github.com/Firstbloodio/token/blob/master/smart_contract/FirstBloodToken.sol
+ */
+contract StandardMintToken is StandardToken, Ownable {
+
   event Mint(address indexed to, uint256 amount);
   
-  function FrozenMintableToken(
+  function StandardMintToken(
     string _name, 
     string _symbol, 
     uint8 _decimals) 
@@ -20,6 +22,7 @@ contract FrozenMintableToken is FrozenStandardToken, Ownable {
     DetailedERC20(_name, _symbol, _decimals) 
   {
   }
+
   /*
      @dev Function to mint tokens
      @param _to The address that will receive the minted tokens.
@@ -33,4 +36,5 @@ contract FrozenMintableToken is FrozenStandardToken, Ownable {
     Transfer(address(0), _to, _amount);
     return true;
   }
+
 }
