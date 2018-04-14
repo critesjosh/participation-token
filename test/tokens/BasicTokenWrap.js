@@ -4,10 +4,6 @@ exports.shouldBehaveLikeBasicToken = function () {
   contract('BasicToken', function ([_, owner, recipient, anotherAccount]) {
     const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
-    beforeEach(async function () {
-      this.token = await BasicToken.new(owner, 100);
-    });
-
     describe('total supply', function () {
       it('returns the total amount of tokens', async function () {
         const totalSupply = await this.token.totalSupply();
