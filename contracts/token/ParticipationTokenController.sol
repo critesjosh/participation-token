@@ -4,18 +4,17 @@ import "../math/SafeMath.sol";
 import "../ownership/Ownable.sol";
 import "../token/FrozenMintableToken.sol";
 
-/* 
-    To add [?]:
-      + Burn?  
-
-*/
-
 /*
    @title AttendanceTokenController
    @dev The ParticipationTokenController contract allows "participants" to redeem tokens
         based on signed messages from administrators. Multiple admins agree on a token amount
         and event ID and signed messages for users that can redeem the agreed on token amount
         for the chosen nonce. A nonce can't be reused by the same user.
+
+    V2 suggestions:
+      + Burn 
+      + Intra-user transfer
+      + Token balance based admin status
  */
 contract ParticipationTokenController is Ownable {
   using SafeMath for uint256;
@@ -24,8 +23,8 @@ contract ParticipationTokenController is Ownable {
   mapping (address => mapping (uint256 => bool)) redeemedTokens;  // Whether tokens where redeemed for an ID
   mapping(uint256 => address) IDadmin;                            // The admin's address associated with the 2^i uint ID
   mapping(address => uint256) adminID;                            // The 2^i uint ID associated with the admin's address
-  uint8 sigRequired = 2;                                          // Number of signatures required to redeem tokens
-  FrozenMintableToken public token;                   // Token contract
+  uint8 sigRequired;                                              // Number of signatures required to redeem tokens
+  FrozenMintableToken public token;                               // Token contract
 
   //Events
   event TokensRedeemed(address indexed _address, uint256 _amount, uint256 _nonce);
@@ -43,11 +42,15 @@ contract ParticipationTokenController is Ownable {
   function ParticipationTokenController(
     string _name, 
     string _symbol, 
-    uint8 _decimals) 
+    uint8 _decimals,
+    uint8 _sigRequired) 
     public 
   {    
     // Create new token
-    token = new FrozenMintableToken(_name, _symbol, _decimals); 
+    token = new FrozenMintableToken(_name, _symbol, _decimals);
+
+    //Set number of signature required
+    setSigRequired(_sigRequired);
   }
 
   /*

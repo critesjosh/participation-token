@@ -3,7 +3,7 @@ const FrozenMintableToken = artifacts.require('FrozenMintableToken');
 
 contract('FrozenMintableToken', function ([owner, anyone]) {
   beforeEach(async function () {
-    this.token = await FrozenMintableToken.new({ from: owner });
+    this.token = await FrozenMintableToken.new('NAME', 'SYM', 18, { from: owner });
   });
 
   describe('mint', function () {
