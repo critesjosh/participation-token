@@ -100,20 +100,30 @@ module.exports = {
         
         router.get("/unsignedAttendees/:eventId/:requiredSignatures", (req, res) => {
           
-          var attendeesToReturn = []
+          var unsignedattendeesToReturn = []
+          var signedAttendeesToReturn = []
+          
           var requiredSignatures = req.params.requiredSignatures
+          var signer = req.params.signer
           
           var events = Event.find({_id: req.params.eventId})
           events.exec((err, result) => {
             if(err) console.log(err)
             var event = result[0]
             event.attendees.forEach((attendee, index) => {
-              if(typeof attendee.signatures == "undefined") return
-              if(attendee.signatures.length < requiredSignatures){
-                attendeesToReturn.push(attendee)
+              if(typeof attendee.signatures == "undefined") return // I added this field to the Schema later, so some attendees don't have a signatures field, this passes over those
+              // to sign, they must not have signed && the attendee must need signatures
+             //WIP, not complete 4/14
+              if(attendee.admins.indexOf(signer) > -1 && attendee.signatures.length < requiredSignatures){
+                signedAttendeesToReturn.push(attendee)
+              } else {
+                unsignedattendeesToReturn.push(attendee)
+                attendee.admins.push(signer)
               }
+              
             })
-            res.send(attendeesToReturn)
+            res.send({unsigned: unsignedattendeesToReturn,
+                      signed: signedAttendeesToReturn})
           })
           
         })

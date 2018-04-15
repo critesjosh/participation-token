@@ -1,12 +1,14 @@
-node_modules
-.env
-npm-debug.log
-
-# c9 configs
+# c9 config files
 .c9
 
-# truffle contracts
+# compiled truffle contracts
 build
 
-# production version of UI created by 'npm run build'
+# npm modules
+node_modules
+
+# react production build
 build_webpack
+
+# debug
+npm-debug.log

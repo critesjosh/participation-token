@@ -3,7 +3,7 @@
   "version": "1.7.0",
   "description": "Frozen tokens issuance for participating in the community",
   "scripts": {
-    "test": "scripts/test.sh",
+    "test": "NODE_ENV='test' scripts/test.sh",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "lint:sol": "solium -d .",
@@ -32,7 +32,7 @@
   "bugs": {
     "url": "https://github.com/PhABC/participation-token/issues"
   },
-  "homepage": "https://github.com/PhABC/participation-token",
+  "homepage": ".",
   "devDependencies": {
     "autoprefixer": "6.5.1",
     "babel-core": "6.17.0",
@@ -120,11 +120,6 @@
     "react-router-dom": "^4.2.2",
     "redux": "^3.7.2",
     "web3-utils": "^1.0.0-beta.33"
-  },
-  "babel": {
-    "presets": [
-      "react-app"
-    ]
   },
   "eslintConfig": {
     "extends": "react-app"

@@ -5,7 +5,7 @@ var Schema = mongoose.Schema;
 // create a schema
 var attendeeSchema = new Schema({
     ethAddress: String,
-    admins: Array, // keep track of which Admins sign for the attendee
+    admins: Array,       // keep track of which Admins sign for the attendee
     signatures: Array,   // keep track of the signatures
     email: String,
     eventId: String,

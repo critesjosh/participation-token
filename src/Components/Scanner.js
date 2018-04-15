@@ -3,8 +3,16 @@ import QrReader from 'react-qr-reader'
 import axios from 'axios'
 import Eth from 'ethjs'
 import validate from '../../utils/validate'
+import { connect } from 'react-redux';
 
 import { PageHeader, Button, FormControl } from 'react-bootstrap'
+
+const mapStateToProps = function(state){
+  return {
+    account: state.addAccount.account,
+    web3: state.addWeb3.web3
+  }
+}
 
 class Scanner extends Component {
     
@@ -15,21 +23,26 @@ class Scanner extends Component {
         result: null,
         text: null
       }
-      this.handleScan = this.handleScan.bind(this)
+    }
+    
+    scanAddress(){
+      const web3 = this.props.web3
+      
+      web3.currentProvider.scanQRCode().then(data => {
+        alert(data)
+        this.setState({
+          result: data
+        })
+        
+        this.postData(data)
+      })
+      .catch(err => {
+        console.log(err)
+      })
     }
     
     textChanged(e){
       this.state.text = e.target.value
-    }
-    
-    handleScan(data){
-        if(data){
-          this.setState({
-            result: data
-          })
-
-          this.parseData(data)
-        }
     }
     
     handleSubmit(e){
@@ -72,23 +85,12 @@ class Scanner extends Component {
           console.log(error)
         })
     }
-    
-    handleError(err){
-      console.error(err)
-    }
-    
+  
     render() {
         return(
               <div>
                 <PageHeader>Scan a QR code</PageHeader>
-                <div style={{width: "75%"}}>
-                  <QrReader
-                    delay={this.state.delay}
-                    onError={this.handleError}
-                    onScan={this.handleScan}
-                    style={{ width: '100%' }}
-                    />
-                </div>    
+                <Button bsStyle="primary" onClick={this.scanAddress.bind(this)}>Scan</Button>
                 <p>{this.state.result}</p>
                 
                 <h2>Or...copy and paste</h2>
@@ -105,8 +107,4 @@ class Scanner extends Component {
     }
 }
 
-Scanner.contextTypes = {
-    store: React.PropTypes.object
-}
-
-export default Scanner
+export default connect(mapStateToProps)(Scanner)

@@ -1,8 +1,16 @@
 import React, {Component} from 'react'
-import axios from 'axios'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
+import { connect } from 'react-redux';
 
 import { PageHeader, Button, ListGroup, ListGroupItem } from 'react-bootstrap'
+import axios from 'axios'
+
+const mapStateToProps = function(state){
+  return {
+    account: state.addAccount.account,
+    web3: state.addWeb3.web3
+  }
+}
 
 class SignAttendees extends Component {
     
@@ -46,7 +54,8 @@ class SignAttendees extends Component {
             
             axios.post('https://' + url + '/api/signAttendee/' + this.state.eventId, {
                 signedData: result,
-                msg: msg
+                msg: msg,
+                signer: this.props.account
             }).then(res => {
                 console.log(res)
                 
@@ -85,9 +94,4 @@ class SignAttendees extends Component {
     }
 }
 
-
-SignAttendees.contextTypes = {
-    store: React.PropTypes.object
-}
-
-export default SignAttendees
+export default connect(mapStateToProps)(SignAttendees)
