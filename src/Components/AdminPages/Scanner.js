@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import QrReader from 'react-qr-reader'
 import axios from 'axios'
 import Eth from 'ethjs'
-import validate from '../../utils/validate'
+import validate from '../../../utils/validate'
 import { connect } from 'react-redux';
 
 import { PageHeader, Button, FormControl } from 'react-bootstrap'

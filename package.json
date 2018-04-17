@@ -13,7 +13,7 @@
     "console": "truffle console",
     "coverage": "scripts/coverage.sh",
     "build": "node scripts/build.js",
-    "start": "node scripts/start.js"
+    "start": "node scripts/start.js",
     "testrpc": "node_modules/.bin/testrpc --gasLimit 0xfffffffffff"
   },
   "repository": {

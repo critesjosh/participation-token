@@ -4,16 +4,20 @@ import { Provider } from 'react-redux'
 
 import { Panel }  from 'react-bootstrap'
 
-import Navigation from './Components/Nav'
-import Home from "./Components/Home"
-import AddUser from './Components/AddUser'
-import ListEvents from './Components/ListEvents'
-import ListUsers from './Components/ListUsers'
-import NewEvent from './Components/AddEvent'
-import Event from './Components/Event'
-import Scanner from './Components/Scanner'
-import User from './Components/User'
-import SignAttendees from './Components/SignAttendees'
+import Navigation    from './Components/Nav'
+import Home          from "./Components/Home"
+
+// user pages
+import User          from './Components/UserPages/User'
+import AddUser       from './Components/UserPages/AddUser'
+import Event         from './Components/UserPages/Event'
+import ListEvents    from './Components/UserPages/ListEvents'
+import ListUsers     from './Components/UserPages/ListUsers'
+
+// admin only pages
+import SignAttendees from './Components/AdminPages/SignAttendees'
+import NewEvent      from './Components/AdminPages/AddEvent'
+import Scanner       from './Components/AdminPages/Scanner'
 
 import getWeb3 from './utils/getWeb3'
 

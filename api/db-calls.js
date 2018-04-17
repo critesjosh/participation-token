@@ -54,6 +54,39 @@ module.exports = {
     getUsers: async(req, res) => {
         var result = await User.find({}).exec()
         res.send(result)
+    },
+    
+    getUser: async(req, res) => {
+        var user = User.find({_id: req.params.userId}).exec()
+        res.send(user)
+    },
+    
+    newEvent: async(req, res)=> {
+        var newEvent = new Event({
+            title: req.body.title,
+            eventCreator: req.body.creator,
+        //  eventNonce: nonce,
+            eventCreated: Date.now(),
+            attendees: [],
+            admins: [],
+            tokenAmount: req.body.tokenAmount
+          })
+          
+          await newEvent.save((err) => {
+              if(err) console.log(err)
+          })
+          
+          res.send(newEvent)
+    },
+    
+    listEvents: async(req, res) => {
+        var events = await Event.find({}).sort({eventCreated: -1}).exec()  
+        res.send(events)
+    },
+    
+    getEvent: async(req, res) => {
+        var events = await Event.find({_id: req.params.eventId}).exec()  
+        res.send(events[0])
     }
     
 }

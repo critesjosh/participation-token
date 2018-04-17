@@ -37,55 +37,25 @@ module.exports = {
           return db.getUsers(req, res)
         })
         
-        router.get('/user/:userId', (req, res) =>{
-          var user = User.find({_id: req.params.userId})
-          user.exec((err, result) => {
-            if(err) console.log(err)
-            res.send(result[0])
-          })
+        router.get('/user/:userId', (req, res) => {
+          return db.getUser(req, res)
         })
         
         // calling this enpoint creates a new event
-        // probably better to make this a post request with the event title, creators ETH address
         // attendees will be added as they get signatures
         // admins are the admins authorized by the contract to sign attendee addresses
         router.post('/newevent', (req, res) => {
-          
-          var nonce = "12345"
-          
-          var newEvent = new Event({
-            title: req.body.title,
-            eventCreator: "creators eth address",
-            eventNonce: nonce,
-            eventCreated: Date.now(),
-            attendees: ["an", "array", "of", "attendees"],
-            admins: ["array", "of", "admins"],
-            tokenAmount: 1000
-          })
-          
-          newEvent.save((err)=>{if(err) { console.log(err)} })
-          
-          res.send(newEvent)
+          return db.newEvent(req, res)
         })
         
         // get a list of all of the events
         router.get('/listevents', (req, res) => {
-          var events = Event.find({})
-          events.sort({eventCreated: -1}) // newest events first
-          events.exec((err, result) => {
-            if(err) console.log(err)
-            res.send(result)
-          })
-        
+          return db.listEvents(req, res)
         })
         
         // get details of the associated event ID
         router.get('/event/:eventId', (req, res) => {
-          var events = Event.find({_id: req.params.eventId})
-          events.exec((err, result) => {
-            if(err) console.log(err)
-            res.send(result[0])
-          })
+          return db.getEvent(req, res)
         })
         
         
