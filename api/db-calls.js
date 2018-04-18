@@ -53,12 +53,12 @@ module.exports = {
     
     getUsers: async(req, res) => {
         var result = await User.find({}).exec()
-        res.send(result)
+        return res.send(result)
     },
     
     getUser: async(req, res) => {
         var user = User.find({_id: req.params.userId}).exec()
-        res.send(user)
+        return res.send(user)
     },
     
     newEvent: async(req, res)=> {
@@ -76,17 +76,36 @@ module.exports = {
               if(err) console.log(err)
           })
           
-          res.send(newEvent)
+          return res.send(newEvent)
     },
     
     listEvents: async(req, res) => {
         var events = await Event.find({}).sort({eventCreated: -1}).exec()  
-        res.send(events)
+        return res.send(events)
     },
     
     getEvent: async(req, res) => {
         var events = await Event.find({_id: req.params.eventId}).exec()  
-        res.send(events[0])
+        return res.send(events[0])
+    },
+    
+    signAttendee: async(req, res) => {
+        // get the msg and the sender
+        const msg = req.body.msg
+        const signedMsg = req.body.signedData
+        
+        // find the right attendee
+        var attendee = await Attendee.find({ethAddress: msg}).exec()
+        
+        // add the signature
+        var signatures = attendee.signatures
+        signatures.push(signedMsg)
+        
+        // update the attendee
+        await Attendee.update({ethAddress: msg}, {signatures: signatures})
+        var updatedAttendee = await Attendee.find({ethAddress: msg}).exec()
+
+        return res.send({attendee: updatedAttendee, message: "Attendee has been successfully updated."})
     }
     
 }

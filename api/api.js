@@ -26,41 +26,40 @@ module.exports = {
         
         //now we can set the route path & initialize the API
         router.get("/", function(req, res) {
-          return db.init(req, res)
+          db.init(req, res)
         });
         
         router.post('/newuser', (req, res) => {
-          return db.addUser(req, res)
+          db.addUser(req, res)
         })
         
         router.get("/users", (req, res) => {
-          return db.getUsers(req, res)
+          db.getUsers(req, res)
         })
         
         router.get('/user/:userId', (req, res) => {
-          return db.getUser(req, res)
+          db.getUser(req, res)
         })
         
         // calling this enpoint creates a new event
         // attendees will be added as they get signatures
         // admins are the admins authorized by the contract to sign attendee addresses
         router.post('/newevent', (req, res) => {
-          return db.newEvent(req, res)
+          db.newEvent(req, res)
         })
         
         // get a list of all of the events
         router.get('/listevents', (req, res) => {
-          return db.listEvents(req, res)
+          db.listEvents(req, res)
         })
         
         // get details of the associated event ID
         router.get('/event/:eventId', (req, res) => {
-          return db.getEvent(req, res)
+          db.getEvent(req, res)
         })
         
         
-        // get the list of attendees that still need signatues for the 
-        // provided eventId
+        // get the attendees that still need signatues for the eventId
         
         // this API call should only be callable by contract admins,
         // no one else would have reason to need this info
@@ -106,17 +105,12 @@ module.exports = {
         // can claim their tokens
         
         router.post("/signAttendee/:eventId", (req, res) => {
-            // get the msg and the sender
-            const msg = req.body.msg
-            const signedMsg = req.body.signedData
-            
-            
+          db.signAttendee(req, res)
         })
         
         // add attendee to the specified eventId
         router.post("/addattendee/:eventId", (req, res) => {
           var event
-          
           
           // first add the event to the appropriate users event list
           var user

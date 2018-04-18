@@ -12,3 +12,6 @@ build_webpack
 
 # debug
 npm-debug.log
+
+# currently working document
+working.txt
