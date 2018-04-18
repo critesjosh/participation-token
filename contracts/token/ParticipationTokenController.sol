@@ -2,7 +2,7 @@ pragma solidity ^0.4.18;
 
 import "../math/SafeMath.sol";
 import "../ownership/Ownable.sol";
-import "../token/FrozenMintableToken.sol";
+import "./StandardMintToken.sol";
 
 /*
    @title AttendanceTokenController
@@ -10,6 +10,10 @@ import "../token/FrozenMintableToken.sol";
         based on signed messages from administrators. Multiple admins agree on a token amount
         and event ID and signed messages for users that can redeem the agreed on token amount
         for the chosen nonce. A nonce can't be reused by the same user.
+
+        Token needs to have an ERC-20 compliant INTERFACE and MINT, but doesn't need to follow ERC-20
+        specifications (e.g non-transferable / frokzen token). Token constructor should take 
+        token details as an input.
 
     V2 suggestions:
       + Burn 
@@ -24,33 +28,38 @@ contract ParticipationTokenController is Ownable {
   mapping(uint256 => address) IDadmin;                            // The admin's address associated with the 2^i uint ID
   mapping(address => uint256) adminID;                            // The 2^i uint ID associated with the admin's address
   uint8 sigRequired;                                              // Number of signatures required to redeem tokens
-  FrozenMintableToken public token;                               // Token contract
+  StandardMintToken public token;                                     // Token contract
 
   //Events
   event TokensRedeemed(address indexed _address, uint256 _amount, uint256 _nonce);
   event AdminStatusChanged(address indexed _admin, uint256 _adminID);
   event SigRequiredChanged(uint256 _sigRequired);
   event TokenOwnerChanged(address _newOwner);
+  event TokenAddressChanged(address oldTokenAddress, address newTokenAddress);
 
 
   /*
      @dev Create new ParticipationToken and token controller contract
-     @param _name Name of the new participation token.
-     @param _symbol Symbol of the new participation token.
-     @param _decimals Number of decimals for the new participation token.
+     @param _sigRequired Number of signatures required to redeem tokens
   */  
-  function ParticipationTokenController(
-    string _name, 
-    string _symbol, 
-    uint8 _decimals,
-    uint8 _sigRequired) 
+  function ParticipationTokenController(uint8 _sigRequired) 
     public 
   {    
-    // Create new token
-    token = new FrozenMintableToken(_name, _symbol, _decimals);
-
     //Set number of signature required
     setSigRequired(_sigRequired);
+  }
+
+  /*
+     @dev Set token address associated with this Controller contract.
+     @param _token Address of the participation token to control access to.
+  */
+  function setTokenAddress(StandardMintToken _token) public onlyOwner {
+
+    //Requires this contract to be owner of token for minting
+    require(address(this) == _token.owner());
+    TokenAddressChanged(token, _token);
+    
+    token = _token;
   }
 
   /*

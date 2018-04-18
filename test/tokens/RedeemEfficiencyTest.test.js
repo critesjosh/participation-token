@@ -10,7 +10,7 @@ require('chai')
   .should();
 
 const ParticipationTokenControllerTEST = artifacts.require('ParticipationTokenControllerTEST');
-const FrozenMintableToken = artifacts.require('FrozenMintableToken');
+const FrozenMintBurnToken = artifacts.require('FrozenMintBurnToken');
 
 
 contract('ParticipationTokenControllerTEST', function ([_, owner, admin1, admin2, authorized, unauthorized, anyone]) {
