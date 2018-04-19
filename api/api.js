@@ -14,7 +14,7 @@ module.exports = {
         // To prevent errors from Cross Origin Resource Sharing, we will set 
         // our headers to allow CORS with middleware like so:
         app.use(function(req, res, next) {
-         res.setHeader("Access-Control-Allow-Origin", "*")
+         res.setHeader("Access-Control-Allow-Origin", "*")  // set to aqui.joshcrites.com
          res.setHeader("Access-Control-Allow-Credentials", "true")
          res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT,DELETE")
          res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
@@ -58,43 +58,22 @@ module.exports = {
           db.getEvent(req, res)
         })
         
+        router.post("/signall", (req, res) => {
+          
+        })
+        
+        
         
         // get the attendees that still need signatues for the eventId
         
         // this API call should only be callable by contract admins,
         // no one else would have reason to need this info
-        
         // takes an event id in the url
         // and the number of required signatures in the req body (req.body.requiredSignatures)
+        // returns an object {unsigned: [], signed: []}
         
-        router.get("/unsignedAttendees/:eventId/:requiredSignatures", (req, res) => {
-          
-          var unsignedattendeesToReturn = []
-          var signedAttendeesToReturn = []
-          
-          var requiredSignatures = req.params.requiredSignatures
-          var signer = req.params.signer
-          
-          var events = Event.find({_id: req.params.eventId})
-          events.exec((err, result) => {
-            if(err) console.log(err)
-            var event = result[0]
-            event.attendees.forEach((attendee, index) => {
-              if(typeof attendee.signatures == "undefined") return // I added this field to the Schema later, so some attendees don't have a signatures field, this passes over those
-              // to sign, they must not have signed && the attendee must need signatures
-             //WIP, not complete 4/14
-              if(attendee.admins.indexOf(signer) > -1 && attendee.signatures.length < requiredSignatures){
-                signedAttendeesToReturn.push(attendee)
-              } else {
-                unsignedattendeesToReturn.push(attendee)
-                attendee.admins.push(signer)
-              }
-              
-            })
-            res.send({unsigned: unsignedattendeesToReturn,
-                      signed: signedAttendeesToReturn})
-          })
-          
+        router.get("/unsignedAttendees/:eventId/:requiredSignatures", async(req, res) => {
+          db.getUnsignedAttendees(req, res)
         })
         
         // once the admin signs the attendees address, they call this endpoint
@@ -108,53 +87,13 @@ module.exports = {
           db.signAttendee(req, res)
         })
         
+        router.post("/debug", (req, res) => {
+          console.log(req.body.debug)
+        })
+        
         // add attendee to the specified eventId
-        router.post("/addattendee/:eventId", (req, res) => {
-          var event
-          
-          // first add the event to the appropriate users event list
-          var user
-          var users = User.find({ethAddress: req.body.attendeeEthAddress})
-          users.exec((err, result) => {
-            if(err) console.log(err)
-            
-            user = result[0]
-            if(result.length !== 0){
-              if(typeof user.events == "undefined"){
-                user.events = [req.params.eventId]
-              } else {
-                user.events.push(req.params.eventId)
-              }
-              users.update({ethAddress: req.body.attendeeEthAddress}, user).exec()
-            }
-
-            var userId = user ? user._id : 0
-            
-            
-            // then create a new attendee listing
-            var newAttendee = new Attendee({
-              ethAddress: req.body.attendeeEthAddress,
-              admins: [req.body.adminAdress],
-              signatures: [req.body.adminSignature],
-              eventId: req.params.eventId,
-              userId: userId
-            })
-            
-            
-            // add the attendee to the event  
-            var events = Event.find({_id: req.params.eventId})
-            events.exec((err, result) => {
-              if(err) console.log(err)
-              event = result[0]
-              var attendees = event.attendees.push(newAttendee)
-              events.update({_id: req.params.eventId}, event, (err, result) => {
-                if(err) console.log(err)
-                console.log(result)
-                res.send("success")
-              })
-            })
-          })
-
+        router.post("/addattendee/:eventId", async(req, res) => {
+          db.addAttendee(req, res)
         })
         
         app.use("/api", router);

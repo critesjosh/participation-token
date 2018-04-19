@@ -18,7 +18,8 @@ var app = express();
 //   key: fs.readFileSync("/etc/letsencrypt/live/aqui.joshcrites.com/privkey.pem")
 // }
 //var server = https.createServer(credentials, app)
-var server = http.createServer(app);
+var server = http.createServer(app)
+//http.createServer()
 
 var mongoose = require('mongoose');
 var MongoClient = require('mongodb').MongoClient;
@@ -40,6 +41,14 @@ app.get('/*', function(req, res) {
     }
   })
 })
+
+// set up a route to redirect http to https
+// http.get('*', function(req, res) {  
+//     res.redirect('https://' + req.headers.host + req.url);
+// })
+
+// have it listen on 8080
+//http.listen(8080);
 
 server.listen(process.env.PORT || 8080, process.env.IP || "0.0.0.0", function(){
   var addr = server.address();

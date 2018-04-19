@@ -32,7 +32,8 @@ class SignAttendees extends Component {
         .then((res) => {
             console.log(res)
             this.setState({
-                unsignedAttendees: res.data
+                unsignedAttendees: res.data.unsigned,
+                signedAttendees:   res.data.signed
             })
         })
     }
@@ -40,16 +41,13 @@ class SignAttendees extends Component {
     signAttendee(attendee){
         const url = window.location.hostname
         
-        const signer = this.context.store.getState().addAccount.account
-        const web3 = this.context.store.getState().addWeb3.web3
-        
-        console.log(web3)
-        
+        const signer = this.props.account
+    
         const msg = attendee.ethAddress
         const params = [msg, signer]
         const method = "personal_sign"
 
-        web3.currentProvider.sendAsync({method, params, signer}, (err, result) => {
+        window.web3.currentProvider.sendAsync({method, params, signer}, (err, result) => {
             if(err) console.log(err)
             
             axios.post('https://' + url + '/api/signAttendee/' + this.state.eventId, {

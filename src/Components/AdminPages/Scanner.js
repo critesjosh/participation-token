@@ -1,7 +1,5 @@
 import React, {Component} from 'react'
-import QrReader from 'react-qr-reader'
 import axios from 'axios'
-import Eth from 'ethjs'
 import validate from '../../../utils/validate'
 import { connect } from 'react-redux';
 
@@ -19,17 +17,13 @@ class Scanner extends Component {
     constructor(props) {
       super(props);
       this.state = {
-        delay: 500,
         result: null,
         text: null
       }
     }
     
     scanAddress(){
-      const web3 = this.props.web3
-      
-      web3.currentProvider.scanQRCode().then(data => {
-        alert(data)
+      window.web3.currentProvider.scanQRCode().then(data => {
         this.setState({
           result: data
         })
@@ -40,7 +34,7 @@ class Scanner extends Component {
         console.log(err)
       })
     }
-    
+
     textChanged(e){
       this.state.text = e.target.value
     }
@@ -49,8 +43,6 @@ class Scanner extends Component {
       const address = this.state.text
       const from = this.context.store.getState().addAccount.account
       
-      console.log(validate.ethAddress(address))
-
       if(!validate.ethAddress(address)) return
       
       this.postData((address, from))
@@ -69,8 +61,6 @@ class Scanner extends Component {
     postData(ethAddress, admin){
         
         var url = window.location.hostname
-        
-        if(this.state.result == ethAddress) return
         
         axios.post('https://' + url + '/api/addattendee/' + this.props.match.params.eventId, {
             attendeeEthAddress: ethAddress

@@ -58,6 +58,7 @@ module.exports = {
     
     getUser: async(req, res) => {
         var user = User.find({_id: req.params.userId}).exec()
+        console.log(user)
         return res.send(user)
     },
     
@@ -106,6 +107,74 @@ module.exports = {
         var updatedAttendee = await Attendee.find({ethAddress: msg}).exec()
 
         return res.send({attendee: updatedAttendee, message: "Attendee has been successfully updated."})
+    },
+    
+    addAttendee: async(req, res) => {
+         const eventId = req.params.eventId
+          
+          // then create a new attendee listing
+          var newAttendee = new Attendee({
+            ethAddress: req.body.attendeeEthAddress,
+            admins: [req.body.adminAdress],
+            signatures: [req.body.adminSignature],
+            eventId: eventId,
+            userId: null                  // add if user is registered
+          })
+          
+          // add the attendee to the event  
+          var event = await Event.find({_id: eventId}).exec()
+          event = event[0]
+          console.log("event",event)
+          event.attendees.push(newAttendee)
+          var result = await Event.update({_id: eventId}, event)
+          
+          console.log(result, event)
+          
+          return res.send({updatedEvent: event})
+        
+          // first add the event to the appropriate users event list
+          // var user
+          // var users = User.find({ethAddress: req.body.attendeeEthAddress})
+          // users.exec((err, result) => {
+          //   if(err) console.log(err)
+            
+          //   user = result[0]
+          //   if(result.length !== 0){
+          //     if(typeof user.events == "undefined"){
+          //       user.events = [req.params.eventId]
+          //     } else {
+          //       user.events.push(req.params.eventId)
+          //     }
+          //     users.update({ethAddress: req.body.attendeeEthAddress}, user).exec()
+          //   }
+
+          //   var userId = user ? user._id : 0
+            
+          // })
+    },
+    
+    getUnsignedAttendees: async(req, res) => {
+          var unsignedattendeesToReturn = []
+          var signedAttendeesToReturn = []
+          
+          var requiredSignatures = req.params.requiredSignatures || 5
+          var signer             = req.params.signer
+          
+          var events = await Event.find({_id: req.params.eventId}).exec()
+          var event = events[0]
+          
+          console.log(events)
+          event.attendees.forEach((attendee, index) => {
+            if(typeof attendee.signatures == "undefined") return  // I added this field to the Schema later, so some attendees don't have a signatures field, this passes over those          
+            if(attendee.admins.indexOf(signer) > -1){        // if admin has already signed this one
+              signedAttendeesToReturn.push(attendee)
+            } else {
+              unsignedattendeesToReturn.push(attendee)
+            }
+          })
+          
+          return res.send({unsigned: unsignedattendeesToReturn,
+                           signed: signedAttendeesToReturn})         
     }
     
 }

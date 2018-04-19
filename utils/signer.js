@@ -31,7 +31,7 @@ function toHexPad64(uint){
   @param amount Amount of tokens that participants can redeem for a given event
   @param nonce Event ID number
 */
-function massSign(contractAddress, addresses, amount, nonce){
+function aquiSign(contractAddress, addresses, amount, nonce){
   var add;   // Address without 0x
   var add0x; // Address with 0x
   var m;     // Signed message
@@ -82,6 +82,7 @@ function massSign(contractAddress, addresses, amount, nonce){
 return encodedFunctionCalls;
 }
 
+module.exports = { aquiSign: aquiSign}
 
 //Example
 /*
